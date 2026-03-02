@@ -1,0 +1,105 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""Case law document with extracted metadata"""
+type CaseLaw {
+  """Case number identifier"""
+  caseNumber: String!
+
+  """AI-generated conclusion of the case"""
+  conclusion: String!
+
+  """Court that made the decision"""
+  court: String!
+
+  """Timestamp when the record was created"""
+  createdAt: DateTime!
+
+  """Date of the decision"""
+  dateOfDecision: String!
+
+  """Type of decision (e.g., Judgment, Order, Opinion)"""
+  decisionType: String!
+  id: ID!
+
+  """Office that issued the decision"""
+  office: String
+
+  """Original filename of the uploaded document"""
+  sourceFileName: String!
+
+  """Type of the source file"""
+  sourceFileType: SourceFileType!
+
+  """AI-generated summary of the case"""
+  summary: String!
+
+  """Title of the case law"""
+  title: String!
+
+  """Timestamp when the record was last updated"""
+  updatedAt: DateTime!
+}
+
+"""Filter, sort, and paginate case laws"""
+input CaseLawFilterDto {
+  caseNumber: String
+  court: String
+  dateFrom: String
+  dateTo: String
+  decisionType: String
+  limit: Int = 10
+  page: Int = 1
+  searchTerm: String
+  sortBy: CaseLawSortBy = CREATED_AT
+  sortOrder: SortOrder = DESC
+}
+
+"""The field to sort the results by"""
+enum CaseLawSortBy {
+  CASE_NUMBER
+  COURT
+  CREATED_AT
+  DATE_OF_DECISION
+  TITLE
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Mutation {
+  """Delete a case law by ID"""
+  deleteCaseLaw(id: ID!): Boolean!
+}
+
+"""Paginated case law results"""
+type PaginatedCaseLawResponse {
+  items: [CaseLaw!]!
+  limit: Int!
+  page: Int!
+  total: Int!
+  totalPages: Int!
+}
+
+type Query {
+  """Retrieve a specific case law by ID"""
+  caseLaw(id: ID!): CaseLaw!
+
+  """List case laws with optional filters, sorting, and pagination"""
+  caseLaws(filter: CaseLawFilterDto): PaginatedCaseLawResponse!
+}
+
+"""The order to sort the results"""
+enum SortOrder {
+  ASC
+  DESC
+}
+
+"""The type of the source file used for extraction"""
+enum SourceFileType {
+  HTML
+  PDF
+}

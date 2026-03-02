@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pandektes — Case Law Intelligence</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-primary: #05070a;
+      --bg-secondary: #0c0f16;
+      --bg-card: #121826;
+      --bg-card-hover: #161e2e;
+      --bg-input: #0a0d14;
+      --border: #1e293b;
+      --border-focus: #4f46e5;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #475569;
+      --accent: #6366f1;
+      --accent-hover: #818cf8;
+      --accent-glow: rgba(99, 102, 241, 0.1);
+      --success: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.05);
+      --warning: #f59e0b;
+      --warning-bg: rgba(245, 158, 11, 0.05);
+      --error: #ef4444;
+      --error-bg: rgba(239, 68, 68, 0.05);
+      --gradient-1: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+      --gradient-2: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+      --radius: 8px;
+      --radius-sm: 4px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+      letter-spacing: -0.01em;
+    }
+
+    /* Header */
+    .header {
+      background: rgba(12, 15, 22, 0.8);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(16px);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--gradient-1);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .logo-icon::after {
+      content: '';
+      width: 16px;
+      height: 16px;
+      border: 2px solid white;
+      border-radius: 4px;
+      opacity: 0.9;
+    }
+
+    .logo-text {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .logo-subtitle {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0.25rem 0;
+      border-bottom: 2px solid transparent;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-link.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    /* Layout */
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Upload Section */
+    .hero {
+      text-align: center;
+      padding: 2rem 0 3rem;
+    }
+
+    .hero h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.03em;
+      color: #fff;
+    }
+
+    .hero p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    .upload-zone {
+      max-width: 640px;
+      margin: 0 auto 2rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 4rem 2rem;
+      text-align: center;
+      background: var(--bg-card);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .upload-zone:hover,
+    .upload-zone.drag-over {
+      border-color: var(--accent);
+      background: var(--bg-card-hover);
+      box-shadow: 0 0 40px rgba(99, 102, 241, 0.05);
+    }
+
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .upload-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 1.5rem;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .upload-icon::before {
+      /* Removed emoji-based iconography */
+      content: '';
+      width: 24px;
+      height: 24px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%23475569'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M12 4.5v15m7.5-7.5h-15' /%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+    }
+
+    .upload-zone:hover .upload-icon {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .upload-zone:hover .upload-icon::before {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%236366f1'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M12 4.5v15m7.5-7.5h-15' /%3E%3C/svg%3E");
+    }
+
+    .upload-zone h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .upload-zone p {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .file-selected {
+      display: none;
+      max-width: 640px;
+      margin: 0 auto;
+      align-items: center;
+      gap: 1rem;
+      background: var(--bg-secondary);
+      padding: 1rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .file-selected.show {
+      display: flex;
+    }
+
+    .file-selected .file-name {
+      flex: 1;
+      font-weight: 500;
+      font-size: 0.85rem;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .file-selected .file-size {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-right: 0.5rem;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.25rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      color: var(--text-primary);
+      border-color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .btn-sm {
+      padding: 0.4rem 0.75rem;
+      font-size: 0.8rem;
+    }
+
+    /* Status Messages */
+    .status {
+      max-width: 640px;
+      margin: 1.5rem auto;
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      display: none;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .status.show {
+      display: flex;
+    }
+
+    .status.loading {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .status.success {
+      background: var(--success-bg);
+      border: 1px solid var(--success);
+      color: var(--success);
+    }
+
+    .status.error {
+      background: var(--error-bg);
+      border: 1px solid var(--error);
+      color: var(--error);
+    }
+
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 1.5px solid var(--text-muted);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Result Card */
+    .result-card {
+      max-width: 800px;
+      margin: 3rem auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: none;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .result-card.show {
+      display: block;
+    }
+
+    .result-header {
+      padding: 2.5rem 2.5rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .result-header h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+
+    .result-body {
+      padding: 2.5rem;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .result-body h3 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      margin-top: 2rem;
+    }
+
+    .result-body h3:first-of-type {
+      margin-top: 0;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .field-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .field-item label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .field-item span {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .summary-text,
+    .conclusion-text {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.8;
+      background: var(--bg-input);
+      padding: 1.25rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    /* Browse Section */
+    .filters-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-end;
+    }
+
+    .filter-group {
+      flex: 1;
+    }
+
+    .filter-group label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    input,
+    select {
+      height: 38px;
+      padding: 0 0.85rem;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: #fff;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+    }
+
+    /* Table */
+    .table-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      text-align: left;
+      padding: 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 1rem;
+      font-size: 0.85rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr.clickable-row {
+      cursor: pointer;
+    }
+
+    tr.clickable-row:hover td {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
+    }
+
+    .type-tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: var(--accent-glow);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+    }
+
+    .pagination-info {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .pagination-btns {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    /* Detail view */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      margin-bottom: 2rem;
+      transition: color 0.2s;
+    }
+
+    .back-btn:hover {
+      color: var(--text-primary);
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 5rem 2rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state h3 {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    @media (max-width: 900px) {
+      .filters-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .field-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+
+      <nav class="nav-links">
+        <button class="nav-link active" onclick="showView('upload')">Extract</button>
+        <button class="nav-link" onclick="showView('browse')">Browse</button>
+        <a class="nav-link" href="/api" target="_blank">API Docs</a>
+        <a class="nav-link" href="/graphql" target="_blank">GraphQL</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Upload View -->
+    <div id="view-upload" class="view active">
+      <div class="hero">
+        <h1>Extract Intelligence</h1>
+        <p>Transform legal documents into structured insights using professional-grade AI analysis.</p>
+      </div>
+
+      <div class="upload-zone" id="dropZone">
+        <input type="file" id="fileInput" accept=".pdf,.html,.htm">
+        <div class="upload-icon"></div>
+        <h3>Select a document or drag and drop</h3>
+        <p>PDF or HTML documents up to 10MB</p>
+      </div>
+
+      <div class="file-selected" id="fileSelected">
+        <span class="file-name" id="fileName"></span>
+        <span class="file-size" id="fileSize"></span>
+        <button class="btn btn-primary btn-sm" id="extractBtn" onclick="extractCaseLaw()">
+          Analyze Document
+        </button>
+      </div>
+
+      <div class="status" id="statusMsg">
+        <div class="spinner" id="statusSpinner"></div>
+        <span id="statusText"></span>
+      </div>
+
+      <div class="result-card" id="resultCard"></div>
+    </div>
+
+    <!-- Browse View -->
+    <div id="view-browse" class="view">
+      <h2 style="margin-bottom: 1.5rem; letter-spacing: -0.02em;">Database</h2>
+
+      <div class="filters-bar">
+        <div class="filter-group" style="flex: 2;">
+          <label>General Search</label>
+          <input type="text" id="filterSearch" placeholder="Search by title or content..." oninput="debouncedFetch()">
+        </div>
+        <div class="filter-group">
+          <label>Court</label>
+          <input type="text" id="filterCourt" placeholder="Any court" oninput="debouncedFetch()">
+        </div>
+        <div class="filter-group">
+          <label>Type</label>
+          <input type="text" id="filterType" placeholder="Any type" oninput="debouncedFetch()">
+        </div>
+        <div class="filter-group" style="flex: 0.5;">
+          <label>Sort By</label>
+          <select id="filterSort" onchange="fetchCaseLaws()">
+            <option value="createdAt">Newest First</option>
+            <option value="dateOfDecision">Decision Date</option>
+            <option value="title">Alphabetical</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Court</th>
+              <th>Case Number</th>
+              <th>Type</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="caseLawTableBody">
+          </tbody>
+        </table>
+        <div id="emptyState" class="empty-state" style="display: none;">
+          <h3>No records found</h3>
+          <p>The database is currently empty or no records match your criteria.</p>
+        </div>
+        <div class="pagination" id="paginationBar" style="display: none;">
+          <span class="pagination-info" id="paginationInfo"></span>
+          <div class="pagination-btns">
+            <button class="btn btn-secondary btn-sm" id="prevBtn" onclick="changePage(-1)">Previous</button>
+            <button class="btn btn-secondary btn-sm" id="nextBtn" onclick="changePage(1)">Next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detail View -->
+    <div id="view-detail" class="view">
+      <div class="back-btn" onclick="showView('browse')">Back to Search</div>
+      <div class="result-card show" id="detailCard"></div>
+    </div>
+
+  </main>
+
+  <script>
+    const API = '/api/case-laws';
+    let currentPage = 1;
+    const pageSize = 10;
+    let debounceTimer;
+
+    // ───── Navigation ─────
+    function showView(name) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById(`view-${name}`).classList.add('active');
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      const navBtns = document.querySelectorAll('.nav-links .nav-link');
+      if (name === 'upload') navBtns[0]?.classList.add('active');
+      if (name === 'browse') { navBtns[1]?.classList.add('active'); fetchCaseLaws(); }
+    }
+
+    // ───── File Upload ─────
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+
+    ['dragenter', 'dragover'].forEach(e =>
+      dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.add('drag-over'); })
+    );
+    ['dragleave', 'drop'].forEach(e =>
+      dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.remove('drag-over'); })
+    );
+    dropZone.addEventListener('drop', ev => {
+      if (ev.dataTransfer.files.length) { fileInput.files = ev.dataTransfer.files; handleFileSelect(); }
+    });
+    fileInput.addEventListener('change', handleFileSelect);
+
+    function handleFileSelect() {
+      const file = fileInput.files[0];
+      if (!file) return;
+      document.getElementById('fileName').textContent = file.name;
+      document.getElementById('fileSize').textContent = formatSize(file.size);
+      document.getElementById('fileSelected').classList.add('show');
+      hideStatus();
+      document.getElementById('resultCard').classList.remove('show');
+    }
+
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / 1048576).toFixed(1) + ' MB';
+    }
+
+    // ───── Extract ─────
+    async function extractCaseLaw() {
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const btn = document.getElementById('extractBtn');
+      btn.disabled = true;
+      btn.textContent = 'Processing...';
+      showStatus('loading', 'Analysis in progress. AI is processing the document structure and extracting metadata.');
+
+      try {
+        const form = new FormData();
+        form.append('file', file);
+
+        const res = await fetch(`${API}/extract`, { method: 'POST', body: form });
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.message || err.error || `HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+        showStatus('success', 'Analysis complete. The extracted intelligence has been persisted to the database.');
+        renderResultCard('resultCard', data);
+        document.getElementById('resultCard').classList.add('show');
+      } catch (e) {
+        showStatus('error', `Analysis failed: ${e.message}`);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Analyze Document';
+      }
+    }
+
+    // ───── Status ─────
+    function showStatus(type, text) {
+      const el = document.getElementById('statusMsg');
+      el.className = `status show ${type}`;
+      document.getElementById('statusSpinner').style.display = type === 'loading' ? 'block' : 'none';
+      document.getElementById('statusText').textContent = text;
+    }
+    function hideStatus() {
+      document.getElementById('statusMsg').classList.remove('show');
+    }
+
+    // ───── Result Card ─────
+    function renderResultCard(containerId, data) {
+      const date = data.dateOfDecision ? new Date(data.dateOfDecision).toLocaleDateString('en-US', {
+        year: 'numeric', month: 'long', day: 'numeric'
+      }) : 'N/A';
+
+      document.getElementById(containerId).innerHTML = `
+        <div class="result-header">
+          <div style="font-size:0.65rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.5rem;">Extracted Intelligence</div>
+          <h2>${esc(data.title)}</h2>
+        </div>
+        <div class="result-body">
+          <div class="section-label">General Metadata</div>
+          <div class="field-grid">
+            <div class="field-item">
+              <label>Court Jurisdiction</label><span>${esc(data.court)}</span>
+            </div>
+            <div class="field-item">
+              <label>Decision Type</label><span>${esc(data.decisionType)}</span>
+            </div>
+            <div class="field-item">
+              <label>Decision Date</label><span>${date}</span>
+            </div>
+            <div class="field-item">
+              <label>Case Identifier</label><span>${esc(data.caseNumber)}</span>
+            </div>
+            <div class="field-item">
+              <label>Office / Chamber</label><span>${esc(data.office || 'N/A')}</span>
+            </div>
+          </div>
+
+          <div class="section-label">Legal Summary</div>
+          <div class="summary-text">${esc(data.summary)}</div>
+
+          <div class="section-label" style="margin-top:2.5rem;">Final Conclusion</div>
+          <div class="conclusion-text">${esc(data.conclusion)}</div>
+
+          <div class="section-label" style="margin-top:4rem;">System Information</div>
+          <div class="field-grid" style="grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+            <div class="field-item"><label>Unique ID</label><span style="font-size:0.7rem;font-family:monospace;opacity:0.6;">${esc(data.id)}</span></div>
+            <div class="field-item"><label>Source File</label><span>${esc(data.sourceFileName || 'N/A')}</span></div>
+            <div class="field-item"><label>Format</label><span>${esc(data.sourceFileType || 'N/A')}</span></div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ───── Browse & Filters ─────
+    function debouncedFetch() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => { currentPage = 1; fetchCaseLaws(); }, 400);
+    }
+
+    async function fetchCaseLaws() {
+      const params = new URLSearchParams();
+      const search = document.getElementById('filterSearch').value.trim();
+      const court = document.getElementById('filterCourt').value.trim();
+      const type = document.getElementById('filterType').value.trim();
+      const sort = document.getElementById('filterSort').value;
+
+      if (search) params.set('searchTerm', search);
+      if (court) params.set('court', court);
+      if (type) params.set('decisionType', type);
+      params.set('sortBy', sort);
+      params.set('sortOrder', 'DESC');
+      params.set('page', currentPage);
+      params.set('limit', pageSize);
+
+      try {
+        const res = await fetch(`${API}?${params}`);
+        const data = await res.json();
+        renderTable(data);
+      } catch (e) {
+        console.error('Failed to fetch case laws:', e);
+      }
+    }
+
+    function renderTable(data) {
+      const tbody = document.getElementById('caseLawTableBody');
+      const empty = document.getElementById('emptyState');
+      const pagination = document.getElementById('paginationBar');
+
+      if (!data.items || data.items.length === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+        pagination.style.display = 'none';
+        return;
+      }
+
+      empty.style.display = 'none';
+      pagination.style.display = 'flex';
+
+      tbody.innerHTML = data.items.map(item => {
+        const date = item.dateOfDecision ? new Date(item.dateOfDecision).toLocaleDateString('en-US', {
+          year: 'numeric', month: 'short', day: 'numeric'
+        }) : '—';
+        return `
+          <tr class="clickable-row" onclick="viewDetail('${item.id}')">
+            <td style="font-weight:600;">${esc(item.title)}</td>
+            <td>${esc(item.court)}</td>
+            <td style="font-family:monospace;font-size:0.8rem;">${esc(item.caseNumber)}</td>
+            <td><span class="type-tag">${esc(item.decisionType)}</span></td>
+            <td>${date}</td>
+          </tr>
+        `;
+      }).join('');
+
+      const start = (data.page - 1) * data.limit + 1;
+      const end = Math.min(data.page * data.limit, data.total);
+      document.getElementById('paginationInfo').textContent = `Showing ${start} – ${end} of ${data.total} results`;
+      document.getElementById('prevBtn').disabled = data.page <= 1;
+      document.getElementById('nextBtn').disabled = data.page >= data.totalPages;
+    }
+
+    function changePage(delta) {
+      currentPage += delta;
+      fetchCaseLaws();
+    }
+
+    // ───── Detail ─────
+    async function viewDetail(id) {
+      try {
+        const res = await fetch(`${API}/${id}`);
+        const data = await res.json();
+        renderResultCard('detailCard', data);
+        showView('detail');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (e) {
+        console.error('Failed to load case law details:', e);
+      }
+    }
+
+    // ───── Utils ─────
+    function esc(str) {
+      if (!str) return '';
+      const d = document.createElement('div');
+      d.textContent = str;
+      return d.innerHTML;
+    }
+  </script>
+</body>
+
+</html>
