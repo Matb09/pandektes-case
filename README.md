@@ -99,13 +99,14 @@ npm run build
 npm run start:prod
 ```
 
-### 5. Access the APIs
+### 5. Access the Application
 
-| Interface | URL |
-|---|---|
-| **Swagger UI** | http://localhost:3000/api |
-| **GraphQL Playground** | http://localhost:3000/graphql |
-| **Health Check** | http://localhost:3000/health |
+| Interface | URL | Description |
+|---|---|---|
+| **Web UI** | http://localhost:3000 | Full frontend to upload, browse, and search case laws |
+| **Swagger UI** | http://localhost:3000/api | Interactive REST endpoint testing |
+| **GraphQL Playground** | http://localhost:3000/graphql | GraphQL query environment |
+| **Health Check** | http://localhost:3000/health | Application health status |
 
 ## API Reference
 
