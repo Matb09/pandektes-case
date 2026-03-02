@@ -326,7 +326,7 @@ src/
 
 ### LLM Choice: OpenAI GPT-5.2
 - **Why**: Best cost-to-quality ratio for structured data extraction. JSON response mode ensures reliable parsing without fragile regex.
-- **Trade-off**: Requires an API key and internet access. The extraction cost is ~$0.001 per document.
+- **Trade-off**: Requires an API key and internet access.
 
 ### Code-First GraphQL
 - **Why**: Single source of truth — decorators on TypeScript classes generate both the GraphQL schema and database schema.
