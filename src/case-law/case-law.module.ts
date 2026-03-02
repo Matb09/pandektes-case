@@ -8,13 +8,9 @@ import { FileParserModule } from '../file-parser/file-parser.module';
 import { LlmModule } from '../llm/llm.module';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([CaseLaw]),
-        FileParserModule,
-        LlmModule,
-    ],
-    controllers: [CaseLawController],
-    providers: [CaseLawService, CaseLawResolver],
-    exports: [CaseLawService],
+  imports: [TypeOrmModule.forFeature([CaseLaw]), FileParserModule, LlmModule],
+  controllers: [CaseLawController],
+  providers: [CaseLawService, CaseLawResolver],
+  exports: [CaseLawService],
 })
-export class CaseLawModule { }
+export class CaseLawModule {}

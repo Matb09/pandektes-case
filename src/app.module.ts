@@ -3,9 +3,10 @@ import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { Request } from 'express';
 import configuration from './config/configuration';
 import { DatabaseModule } from './database/database.module';
 import { CaseLawModule } from './case-law/case-law.module';
@@ -22,10 +23,12 @@ import { GqlThrottlerGuard } from './common/guards/gql-throttler.guard';
     }),
 
     // Rate limiting — global default: 10 requests per 60s
-    ThrottlerModule.forRoot([{
-      ttl: 60_000,
-      limit: 10,
-    }]),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60_000,
+        limit: 10,
+      },
+    ]),
 
     // Serve static frontend
     ServeStaticModule.forRoot({
@@ -40,7 +43,7 @@ import { GqlThrottlerGuard } from './common/guards/gql-throttler.guard';
       sortSchema: true,
       playground: process.env.NODE_ENV !== 'production',
       introspection: process.env.NODE_ENV !== 'production',
-      context: ({ req }) => ({ req }),
+      context: ({ req }: { req: Request }) => ({ req }),
     }),
 
     // Database
@@ -57,4 +60,4 @@ import { GqlThrottlerGuard } from './common/guards/gql-throttler.guard';
     { provide: APP_GUARD, useClass: GqlThrottlerGuard },
   ],
 })
-export class AppModule { }
+export class AppModule {}

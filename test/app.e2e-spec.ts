@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
@@ -115,24 +120,28 @@ describe('Case Law API (e2e)', () => {
           object: 'chat.completion',
           created: 1677652288,
           model: 'gpt-4o-2024-08-06',
-          choices: [{
-            index: 0,
-            message: {
-              role: 'assistant',
-              content: JSON.stringify({
-                title: 'Smith v. Jones',
-                decisionType: 'Opinion',
-                dateOfDecision: '2023-06-15',
-                office: 'Office of the Chief Justice',
-                court: 'Supreme Court of the United States',
-                caseNumber: '22-1234',
-                summary: 'This case involved a dispute between Smith and Jones regarding the interpretation of the Fourth Amendment...',
-                conclusion: 'The Court reversed the lower court\'s decision and held that accessing historical cell-site location information constitutes a search under the Fourth Amendment.'
-              }),
+          choices: [
+            {
+              index: 0,
+              message: {
+                role: 'assistant',
+                content: JSON.stringify({
+                  title: 'Smith v. Jones',
+                  decisionType: 'Opinion',
+                  dateOfDecision: '2023-06-15',
+                  office: 'Office of the Chief Justice',
+                  court: 'Supreme Court of the United States',
+                  caseNumber: '22-1234',
+                  summary:
+                    'This case involved a dispute between Smith and Jones regarding the interpretation of the Fourth Amendment...',
+                  conclusion:
+                    "The Court reversed the lower court's decision and held that accessing historical cell-site location information constitutes a search under the Fourth Amendment.",
+                }),
+              },
+              finish_reason: 'stop',
             },
-            finish_reason: 'stop'
-          }],
-          usage: { prompt_tokens: 9, completion_tokens: 12, total_tokens: 21 }
+          ],
+          usage: { prompt_tokens: 9, completion_tokens: 12, total_tokens: 21 },
         });
 
       // Step 1: Upload HTML and extract metadata
@@ -176,7 +185,9 @@ describe('Case Law API (e2e)', () => {
         .expect(200);
 
       expect(listRes.body.total).toBeGreaterThanOrEqual(1);
-      const found = listRes.body.items.find((item: any) => item.id === createdId);
+      const found = listRes.body.items.find(
+        (item: any) => item.id === createdId,
+      );
       expect(found).toBeDefined();
 
       // Step 4: Delete and verify it's gone
